@@ -81,3 +81,26 @@ def test_delete_wrong_user(client):
     response = client.delete('/users/-1')
 
     assert response.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_find_one_user(client):
+    client.post(
+        '/users/',
+        json={
+            'username': 'alice',
+            'email': 'alice@example.com',
+            'password': 'secret',
+        },
+    )
+    response = client.get('/users/1')
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'username': 'alice',
+        'email': 'alice@example.com',
+        'id': 1,
+    }
+
+
+def test_find_wrong_one_user(client):
+    response = client.get('/users/-1')
+    assert response.status_code == HTTPStatus.NOT_FOUND
